@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="author" content="Morro Torto">
+    <meta name="description" content="Área de Preservação Ambiental do Morro Torto">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <script src="../bibliotecas/leaflet/L.KML.js"></script>
+
+    <style>
+        .mapa{
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="../inicio/">
+                <img src="../imagens/logo_morro_torto.png" width="30" height="30" class="d-inline-block align-top"
+                     alt="" loading="lazy"></img>
+                Área Ambiental do Morro Torto
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../sobre/">Sobre nós</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../mapa/">Mapa de Nascentes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../contato/">Contato</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div id="mapa" class="mapa"></div>
+    </div>
+
+<script type="module">
+    window.mapa = L.map('mapa').setView([23.05, 47.13], 13);
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+        attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+        maxZoom: 18,
+        id: 'mapbox/streets-v11',
+        tileSize: 512,
+        zoomOffset: -1,
+        accessToken: 'pk.eyJ1IjoiYm9uYWZlIiwiYSI6ImNraXh4bmpzdjBwaWYycW5ybmJvOTVsYnMifQ.QXMDxr_cFwGIcHN_teED9A'
+    }).addTo(window.mapa);
+
+    var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+
+
+    ['../dados/nascentes_bacia_capivari_mirim.geojson',
+    '../dados/nascentes_bacia_jundiai.geojson',
+    '../dados/nascentes_bacia_tiete.geojson']
+        .forEach(arquivoGEOJsonBacia => fetch(arquivoGEOJsonBacia)
+            .then(res => res.text())
+            .then(textoArquivoGEOJsonBacia => {
+
+                const jsonBacia = JSON.parse(textoArquivoGEOJsonBacia);
+                const layerGeoJSON = L.geoJSON(jsonBacia,{
+                    pointToLayer: (feature, latlng) => {
+                        return L.circleMarker(latlng,geojsonMarkerOptions);
+                    },
+                    onEachFeature: (feature, layer) => {
+                         layer.on({
+                            mouseover: evento => {
+                                let layer = evento.target;
+                                layer.setStyle({
+                                    weight: 5,
+                                    color: '#567',
+                                    dashArray: '',
+                                    fillOpacity: 0.7
+                                });
+
+                                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                    layer.bringToFront();
+                                }
+                            },
+                            mouseout: evento => {
+                                layerGeoJSON.resetStyle(evento.target);
+                            },
+                            click: evento => {
+                                window.mapa.fitBounds(e.target.getBounds());
+                            }
+                        });
+                    }
+                });
+                window.mapa.addLayer(layerGeoJSON);
+
+                const bounds = layerGeoJSON.getBounds();
+                window.mapa.fitBounds(bounds);
+            }));
+</script>
+</body>
+</html>

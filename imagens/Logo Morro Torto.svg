@@ -143,8 +143,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.5"
-     inkscape:cx="33.32395"
-     inkscape:cy="604.63343"
+     inkscape:cx="96.005441"
+     inkscape:cy="612.63343"
      inkscape:document-units="mm"
      inkscape:current-layer="layer12"
      showgrid="false"
@@ -289,12 +289,12 @@
        inkscape:original-d="m 155.04583,280.59583 c 15.16971,-2.82249 30.33916,-5.29193 45.50833,-7.9375 15.16918,-2.64556 17.99194,-9.17249 26.9875,-13.75833 8.99557,-4.58585 17.99193,-18.69749 26.9875,-28.04583 8.99557,-9.34835 4.58638,-31.75027 6.87917,-47.625"
        transform="translate(1.0583333,-1.5875)" />
     <path
-       style="fill:none;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 62.441666,228.20834 C 41.557636,204.58646 29.982203,172.94694 30.691666,141.425 31.109415,122.86413 35.693797,104.35016 44.45,87.979167 55.105382,68.057382 71.758518,51.637638 91.016666,39.825 106.38124,30.400618 123.58973,23.756187 141.48604,21.608873 c 17.89632,-2.147313 36.48647,0.324728 52.71813,8.16196 9.92738,4.793297 18.93982,11.583209 25.92915,20.108335 8.59676,10.485759 14.00845,23.548452 15.34585,37.041666"
+       style="fill:none;stroke:#ffffff;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="M 62.441666,228.20834 C 41.518359,204.6133 29.934877,172.95178 30.691666,141.425 31.137105,122.86862 35.757897,104.37993 44.45,87.979167 55.038332,68.000495 71.569946,51.361254 91.016666,39.825 106.41132,30.692529 123.70151,24.66739 141.49948,22.762273 c 17.79797,-1.905118 36.08767,0.35485 52.70469,7.00856 5.26697,2.108977 10.40254,4.676793 14.83202,8.222001 4.42948,3.545208 8.14044,8.127336 10.0388,13.473834 2.05424,5.785504 1.86155,12.336894 -0.52916,17.991666"
        id="path880"
        inkscape:connector-curvature="0"
        inkscape:path-effect="#path-effect882"
-       inkscape:original-d="M 62.441666,228.20834 C 53.975264,205.27751 39.158597,164.35529 30.691666,141.425 22.224735,118.49471 38.453041,108.96918 44.45,87.979167 50.446958,66.989152 75.31832,56.758069 91.016666,39.825 106.71501,22.891932 170.03916,36.649737 194.20417,29.770833 c 24.16501,-6.878902 12.52386,17.109457 25.92915,20.108335 13.4053,2.998875 5.46833,27.692789 15.34585,37.041666"
+       inkscape:original-d="M 62.441666,228.20834 C 53.975264,205.27751 39.158597,164.35529 30.691666,141.425 22.224735,118.49471 38.453041,108.96918 44.45,87.979167 50.446958,66.989152 75.31832,56.758069 91.016666,39.825 106.71501,22.891932 170.03916,36.649737 194.20417,29.770833 c 24.16501,-6.878902 11.46553,18.696957 24.87082,21.695835 13.4053,2.998875 -10.40668,8.642789 -0.52916,17.991666"
        transform="translate(5.2916667,4.7625)"
        sodipodi:nodetypes="csssssc" />
   </g>
@@ -308,10 +308,11 @@
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        id="text5040"><textPath
          xlink:href="#path880"
-         id="textPath870"><tspan
-   id="tspan5036"
-   style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-0.65616649px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.26458332"
-   dx="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.7251244e-05 0 0 0 0 0 2.7251244e-05">  Área de Preservação Ambiental do Morro Torto</tspan></textPath></text>
+         id="textPath884"
+         style="letter-spacing:-0.65616649px"><tspan
+           id="tspan5036"
+           style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;line-height:0;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Italic';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-0.65616649px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;stroke:none;stroke-width:0.26458332"
+           dx="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 2.7251244e-05 0 0 0 0 0 2.7251244e-05">  Área de Preservação Ambiental do Morro Torto</tspan></textPath></text>
     <path
        style="fill:none;stroke:none;stroke-width:0.26458332px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="m 89.958332,262.07499 c 18.885478,14.75898 42.235898,23.72554 66.145828,25.40001 21.96668,1.53838 44.09608,-2.97634 64.55834,-11.1125 12.26932,-4.8785 24.16368,-11.15356 33.86666,-20.10835 14.77298,-13.63384 23.75337,-33.35164 24.34167,-53.44583"
