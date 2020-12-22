@@ -26,6 +26,31 @@
             width: 800px;
             height: 600px;
         }
+
+        .titulo {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .titulo h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+
+       .legenda {
+            line-height: 18px;
+            color: #555;
+        }
+        .legenda i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -71,57 +96,92 @@
         accessToken: 'pk.eyJ1IjoiYm9uYWZlIiwiYSI6ImNraXh4bmpzdjBwaWYycW5ybmJvOTVsYnMifQ.QXMDxr_cFwGIcHN_teED9A'
     }).addTo(window.mapa);
 
-    var geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
+
+
+
+    let bacias = [{arquivo:'../dados/nascentes_bacia_capivari_mirim.geojson', cor:'#3333ff', nome:'Bacia Rio Capivari-Mirim'},
+    {arquivo:'../dados/nascentes_bacia_jundiai.geojson', cor:'#00b300', nome:'Bacia Rio Jundiaí'},
+    {arquivo:'../dados/nascentes_bacia_tiete.geojson', cor:'#ff5c33', nome:'Bacia Rio Tietê'}];
+
+    bacias.forEach(geoJsonBacia => fetch(geoJsonBacia.arquivo)
+        .then(res => res.text())
+        .then(textoArquivoGEOJsonBacia => {
+
+            const jsonBacia = JSON.parse(textoArquivoGEOJsonBacia);
+            const layerGeoJSON = L.geoJSON(jsonBacia,{
+                pointToLayer: (feature, latlng) => {
+
+                  var geojsonMarkerOptions = {
+                        radius: 8,
+                        fillColor: geoJsonBacia.cor,
+                        color: "#000",
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    };
+                    return L.circleMarker(latlng,geojsonMarkerOptions);
+                },
+                onEachFeature: (feature, layer) => {
+                     layer.on({
+                        mouseover: evento => {
+                            let layer = evento.target;
+                            layer.setStyle({
+                                weight: 5,
+                                color: geoJsonBacia.cor,
+                                dashArray: '',
+                                fillOpacity: 0.7
+                            });
+
+                            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                                layer.bringToFront();
+                            }
+                        },
+                        mouseout: evento => {
+                            layerGeoJSON.resetStyle(evento.target);
+                        },
+                        click: evento => {
+                            window.mapa.fitBounds(evento.target.getBounds());
+                        }
+                    });
+                }
+            });
+            window.mapa.addLayer(layerGeoJSON);
+
+            const bounds = layerGeoJSON.getBounds();
+            window.mapa.fitBounds(bounds);
+        }));
+
+
+    let titulo = L.control();
+
+    titulo.onAdd = function(mapa) {
+        this._div = L.DomUtil.create('div', 'titulo');
+        this.atualizar();
+        return this._div;
     };
 
+    titulo.atualizar = function(props) {
+        this._div.innerHTML = `
+            <h4>Nascentes de Indaiatuba</h4>
+            Mapa interativo das nascentes de Indaiatuba - SP
+        `;
+    };
 
-    ['../dados/nascentes_bacia_capivari_mirim.geojson',
-    '../dados/nascentes_bacia_jundiai.geojson',
-    '../dados/nascentes_bacia_tiete.geojson']
-        .forEach(arquivoGEOJsonBacia => fetch(arquivoGEOJsonBacia)
-            .then(res => res.text())
-            .then(textoArquivoGEOJsonBacia => {
+    titulo.addTo(window.mapa);
 
-                const jsonBacia = JSON.parse(textoArquivoGEOJsonBacia);
-                const layerGeoJSON = L.geoJSON(jsonBacia,{
-                    pointToLayer: (feature, latlng) => {
-                        return L.circleMarker(latlng,geojsonMarkerOptions);
-                    },
-                    onEachFeature: (feature, layer) => {
-                         layer.on({
-                            mouseover: evento => {
-                                let layer = evento.target;
-                                layer.setStyle({
-                                    weight: 5,
-                                    color: '#567',
-                                    dashArray: '',
-                                    fillOpacity: 0.7
-                                });
 
-                                if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-                                    layer.bringToFront();
-                                }
-                            },
-                            mouseout: evento => {
-                                layerGeoJSON.resetStyle(evento.target);
-                            },
-                            click: evento => {
-                                window.mapa.fitBounds(e.target.getBounds());
-                            }
-                        });
-                    }
-                });
-                window.mapa.addLayer(layerGeoJSON);
+    let legenda = L.control({position: 'bottomright'});
+    legenda.onAdd = mapa => {
+        let conteudo = L.DomUtil.create('div', 'legenda');
+        bacias.forEach(bacia => {
+            conteudo.innerHTML += `
+                  <i style='background:${bacia.cor}'></i>${bacia.nome}<br>
+            `;
+        });
+        return conteudo;
+    };
+    legenda.addTo(window.mapa);
 
-                const bounds = layerGeoJSON.getBounds();
-                window.mapa.fitBounds(bounds);
-            }));
 </script>
 </body>
 </html>
