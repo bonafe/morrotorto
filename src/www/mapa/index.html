@@ -85,7 +85,7 @@
 <script type="module">
 
     let zoomInicial = 11;
-    let raioInicial = 9;
+    let raioInicial = 5;
 
 
     window.mapa = L.map('mapa').setView([-23.10, -47.18], zoomInicial);
@@ -170,10 +170,10 @@
         let nivelZoom = window.mapa.getZoom();
         let raioAtual = raioInicial;
 
-        raioAtual = raioInicial + (nivelZoom - zoomInicial)*3;
+        raioAtual = raioInicial + (nivelZoom - zoomInicial)*4;
 
 
-        console.log (`Zoom: ${zoomInicial} - ${nivelZoom} --- Tamanho: ${raioInicial} - ${raioAtual}`);
+        console.log (`Zoom: ${zoomInicial} - ${nivelZoom} --- Raio: ${raioInicial} - ${raioAtual}`);
         bacias.forEach(objetoBacia => {
             objetoBacia.layerGeoJSON.eachLayer(layer => {
                 layer.setStyle({
