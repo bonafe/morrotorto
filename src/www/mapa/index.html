@@ -83,7 +83,12 @@
     <div id="mapa"></div>
 
 <script type="module">
-    window.mapa = L.map('mapa').setView([-23.10, -47.18], 11);
+
+    let zoomInicial = 11;
+    let raioInicial = 9;
+
+
+    window.mapa = L.map('mapa').setView([-23.10, -47.18], zoomInicial);
 
 
     L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -115,17 +120,18 @@
         }
     ];
 
-    bacias.forEach(geoJsonBacia => fetch(geoJsonBacia.arquivo)
+
+    bacias.forEach(objetoBacia => fetch(objetoBacia.arquivo)
         .then(res => res.text())
         .then(textoArquivoGEOJsonBacia => {
 
             const jsonBacia = JSON.parse(textoArquivoGEOJsonBacia);
-            const layerGeoJSON = L.geoJSON(jsonBacia,{
+            objetoBacia.layerGeoJSON = L.geoJSON(jsonBacia, {
                 pointToLayer: (feature, latlng) => {
 
                   var geojsonMarkerOptions = {
-                        radius: 8,
-                        fillColor: geoJsonBacia.cor,
+                        radius: raioInicial,
+                        fillColor: objetoBacia.cor,
                         color: "#000",
                         weight: 1,
                         opacity: 1,
@@ -139,7 +145,7 @@
                             let layer = evento.target;
                             layer.setStyle({
                                 weight: 5,
-                                color: geoJsonBacia.cor,
+                                color: objetoBacia.cor,
                                 dashArray: '',
                                 fillOpacity: 0.7
                             });
@@ -149,7 +155,7 @@
                             }
                         },
                         mouseout: evento => {
-                            layerGeoJSON.resetStyle(evento.target);
+                            objetoBacia.layerGeoJSON.resetStyle(evento.target);
                         },
                         click: evento => {
                             window.mapa.fitBounds(evento.target.getBounds());
@@ -157,12 +163,28 @@
                     });
                 }
             });
-            window.mapa.addLayer(layerGeoJSON);
-
-            //const bounds = layerGeoJSON.getBounds();
-            //window.mapa.fitBounds(bounds);
+            window.mapa.addLayer(objetoBacia.layerGeoJSON);
         }));
 
+    window.mapa.on('zoomend', () => {
+        let nivelZoom = window.mapa.getZoom();
+        let raioAtual = raioInicial;
+
+        raioAtual = raioInicial + (nivelZoom - zoomInicial)*3;
+
+
+        console.log (`Zoom: ${zoomInicial} - ${nivelZoom} --- Tamanho: ${raioInicial} - ${raioAtual}`);
+        bacias.forEach(objetoBacia => {
+            objetoBacia.layerGeoJSON.eachLayer(layer => {
+                layer.setStyle({
+                    radius: raioAtual
+                });
+            });
+        });
+    });
+
+    //const bounds = layerGeoJSON.getBounds();
+    //window.mapa.fitBounds(bounds);
 
     let titulo = L.control();
 
