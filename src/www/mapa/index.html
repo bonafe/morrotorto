@@ -82,7 +82,12 @@
     </header>
     <div id="mapa"></div>
 
-<script type="module" src="./mapa.js"></script>
+<script type="module">
+    import { MapaNascentes } from './mapa.js';
+
+    let mapa = new MapaNascentes(document.querySelector('#mapa'));
+
+</script>
 
 </body>
 </html>

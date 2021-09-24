@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Redes Sem Fio</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+
+    <script src="/bibliotecas/leaflet/L.KML.js"></script>
+
+    <!-- Elementos da Tela -->
+    <script type="module">        
+        import { MenuView } from '/modulos/menu/menu_view.js';
+        import { CaracterizadorRedeSemFio } from '/modulos/mapas/caracterizador_rede_sem_fio.js';
+
+        window.onload = () => {
+            window.menu = document.getElementsByTagName("menu-view")[0];
+        }
+    </script>
+</head>
+<body>    
+    <header>
+        <menu-view src="./menu_redes_sem_fio.json"></menu-view>
+    </header>
+    <section>
+        <caracterizador-rede-sem-fio></caracterizador-rede-sem-fio>
+    </section>
+</body>
+</html>
