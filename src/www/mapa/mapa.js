@@ -16,7 +16,7 @@ export class MapaNascentes{
         this.criarCamadaBaciasHidrograficas();
         this.criarTituloELegendas();
         this.tratarRedimensionamento();
-        this.processarLocalDoUsuario();
+        //this.processarLocalDoUsuario();
     }
 
 
