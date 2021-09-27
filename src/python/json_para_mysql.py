@@ -28,7 +28,7 @@ with connection:
                                  nascente['interferencia_antropica'], nascente['tipo_vegetacao'],
                                  nascente['proprietario'], nascente['nome_proprietario'], nascente['telefone_contato'],
                                  nascente['destinacao_propriedade'], nascente['endereco'], nascente['bairro'],
-                                 nascente['localizacao'], nascente['latitude'], nascente['longitude'],
+                                 nascente['localizacao'], nascente['coordenadas']['wgs84']['latitude'], nascente['coordenadas']['wgs84']['longitude'],
                                  nascente['elevacao']))
     
     connection.commit()
