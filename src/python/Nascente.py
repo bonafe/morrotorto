@@ -26,6 +26,5 @@ class Nascente:
         self.endereco = ""
         self.bairro = ""
         self.localizacao = ""
-        self.latitude = ""
-        self.longitude = ""
+        self.coordenadas = None
         self.elevacao = ""
