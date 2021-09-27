@@ -7,7 +7,7 @@ export class MapaNascentes{
     constructor(containerMapa){
 
         this.zoomInicial = 12;
-        this.raioInicial = 5;
+        this.raioInicial = 150;
         this.latitudeLongitudeInicial = [-23.10, -47.18];
 
         this.mapa = L.map(containerMapa).setView(this.latitudeLongitudeInicial, this.zoomInicial);
@@ -17,6 +17,8 @@ export class MapaNascentes{
         this.criarTituloELegendas();
         this.tratarRedimensionamento();
         //this.processarLocalDoUsuario();
+
+        this.nascentesMapa = [];
     }
 
 
@@ -35,14 +37,46 @@ export class MapaNascentes{
         return camadaTileServer;
     }
 
+    cor (nascente){
+        let arquivo = nascente.arquivo.toLowerCase() + " " + nascente.bacia;
+        arquivo = arquivo.replace("tietê","tiete");
+        arquivo = arquivo.replace("jundiaí","jundiai");
 
+        if (arquivo.indexOf("tiete") != -1){
+            return '#ff5c33';
+        }else if (arquivo.indexOf("capivari") != -1){
+            return '#3333ff';
+        }else if (arquivo.indexOf("jundiai") != -1){
+            return '#00b300';
+        }else{
+            return "black";
+        }
+    }
 
     criarCamadaBaciasHidrograficas(){
-        BaciaIndaiatubaSP.BACIAS.forEach(objetoBacia => fetch(objetoBacia.arquivo)
-            .then(res => res.text())
-            .then(textoArquivoGEOJsonBacia => {
+        
+        this.nascentesMapa = [];
 
-                const jsonBacia = JSON.parse(textoArquivoGEOJsonBacia);
+        fetch("../dados/nascentes_indaiatuba.json")
+            .then(resposta => resposta.json())
+            .then(nascentes => {                
+                nascentes.forEach(nascente => {
+                    let corPreenchimento = this.cor(nascente);
+                    let corContorno = (corPreenchimento.indexOf("black")!= -1?"red":"black");
+
+                    if (corPreenchimento.indexOf("black")!= -1){
+                        console.dir(nascente);
+                    }
+
+                    let objetoNascente = L.circle([nascente.coordenadas.wgs84.latitude, nascente.coordenadas.wgs84.longitude], {
+                        color: corPreenchimento,
+                        fillColor: corPreenchimento,
+                        fillOpacity: 0.5,
+                        radius: this.raioInicial
+                    }).addTo(this.mapa);
+                    this.nascentesMapa.push(objetoNascente);
+                });
+                /*
                 objetoBacia.layerGeoJSON = L.geoJSON(jsonBacia, {
                     pointToLayer: (feature, latlng) => {
 
@@ -81,25 +115,20 @@ export class MapaNascentes{
                     }
                 });
                 this.mapa.addLayer(objetoBacia.layerGeoJSON);
-            }));
+                */
+            });
 
         this.mapa.on('zoomend', () => {
             let nivelZoom = this.mapa.getZoom();
             let raioAtual = this.raioInicial;
 
-            raioAtual = this.raioInicial + (nivelZoom - this.zoomInicial) * 4;
+            raioAtual = this.raioInicial - (nivelZoom - this.zoomInicial) * 20;
 
 
             console.log (`Zoom: ${this.zoomInicial} - ${nivelZoom} --- Raio: ${this.raioInicial} - ${raioAtual}`);
 
-            BaciaIndaiatubaSP.BACIAS.forEach(objetoBacia => {
-                if (objetoBacia.layerGeoJSON !== undefined){
-                    objetoBacia.layerGeoJSON.eachLayer(layer => {
-                        layer.setStyle({
-                            radius: raioAtual
-                        });
-                    });
-                }
+            this.nascentesMapa.forEach(objetoNascente => {
+                objetoNascente.setRadius(raioAtual);                    
             });
         });
     }
