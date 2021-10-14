@@ -74,6 +74,15 @@ export class MapaNascentes{
                         fillOpacity: 0.5,
                         radius: this.raioInicial
                     }).addTo(this.mapa);
+                    
+                    let htmlPopUp = "<ul>"
+                    for (const [chave, valor] of Object.entries(nascente)) {                        
+                        htmlPopUp += `<li><strong>${chave}:</strong>${valor}</li>`;
+                    }
+                    htmlPopUp += "</ul>";
+
+                    objetoNascente.bindPopup(htmlPopUp);
+
                     this.nascentesMapa.push(objetoNascente);
                 });
                 /*
