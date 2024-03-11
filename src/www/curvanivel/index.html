@@ -230,32 +230,17 @@
 		}
 	</script>
 </head>
-<body>		
-	<div class="container-fluid h-100">
-		<!--div class="row" height="500px">
-			<div class="col-12">
-				<exibidor-camera height="100%" width="100%"></exibidor-camera>
-			</div>
-		</div-->
-		<div class="row">
-			<div class="col-6 mx-auto my-auto text-center">
-				<button id="botao" onclick="window.pressinouBotao();">Iniciar</button>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-4">
-				<canvas id="coordenadas" width="300px" height="300px"></canvas>
-			</div>			
-			<div class="col-4">
-				<canvas id="centroides" width="300px" height="300px"></canvas>
-			</div>			
-			<div class="col-4">
-				<canvas id="distancias_centroides" width="300px" height="300px"></canvas>
-			</div>			
-		</div>
-		<div class="row">
-			<ul id="lista" class="list-group">
-			</ul>
-	</div>
+<body>			
+	<button id="botao" onclick="window.pressinouBotao();">Iniciar</button>
+
+	<canvas id="coordenadas" width="600px" height="600px"></canvas>
+
+	<canvas id="centroides" width="600px" height="600px"></canvas>
+
+	<canvas id="distancias_centroides" width="300px" height="300px"></canvas>
+
+
+	<ul id="lista" class="list-group">
+	</ul>	
 </body>
 </html>
