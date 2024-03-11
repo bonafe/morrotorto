@@ -10,6 +10,6 @@ import os
 
 os.chdir("../www/")
 
-httpd = http.server.HTTPServer(('127.0.0.1', 443), http.server.SimpleHTTPRequestHandler)
+httpd = http.server.HTTPServer(('192.168.1.155', 443), http.server.SimpleHTTPRequestHandler)
 httpd.socket = ssl.wrap_socket (httpd.socket, certfile='../python/server.pem', server_side=True)
 httpd.serve_forever()

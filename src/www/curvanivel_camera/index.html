@@ -1,0 +1,117 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="Área de Preservação Ambiental do Morro Torto">
+    <meta name="description" content="Index do site da Área de Preservação Ambiental do Morro Torto - Indaiatuba - SP">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<script type="module">
+		import { ExibidorCamera } from './exibidor_camera.js';
+	</script>
+	<script>
+		window.onload = () => {						
+			
+
+			console.dir(camera.video);
+			var ctx = document.getElementById('myChart').getContext('2d');
+			var chart = new Chart(ctx, {
+				type: 'scatter',
+				data: {
+					datasets: [{
+						label: 'GPS',
+						data: []
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							type: 'linear',
+							position: 'bottom'
+						}
+					}
+				}
+			});
+
+			if ("geolocation" in navigator) {
+
+				let ultima_posicao = null;				
+
+				function novaPosicao(posicao){
+					console.log(`${posicao.coords.latitude} - ${posicao.coords.longitude}`);
+					let lista = document.getElementById("lista_coordenadas");
+					let item = document.createElement("li");
+					item.appendChild(document.createTextNode(`${posicao.coords.latitude} - ${posicao.coords.longitude} - ${posicao.coords.altitude}`));
+					lista.appendChild(item);
+					chart.data.datasets[0].data.push({
+						x: posicao.coords.longitude,
+						y: posicao.coords.latitude,
+						altura: posicao.coords.altitude
+					});
+
+
+					let altura_minima = chart.data.datasets[0].data.reduce((min, p) => p.altura < min ? p.altura : min, chart.data.datasets[0].data[0].altura);
+					let altura_maxima = chart.data.datasets[0].data.reduce((max, p) => p.altura > max ? p.altura : max, chart.data.datasets[0].data[0].altura);
+					let lista_point_background_color = chart.data.datasets[0].data.map(p => {
+						let amplitude = altura_maxima - altura_minima;
+						let altura_relativa = (p.altura - altura_minima) / amplitude;
+						let cor = Math.round(altura_relativa * 255);
+						return `rgba(${cor}, ${255 - cor}, 0, 0.2)`;						
+					});					
+					chart.data.datasets[0].pointBackgroundColor = lista_point_background_color;
+
+					chart.update();
+				}
+
+
+				navigator.geolocation.watchPosition( 
+
+					posicao_atual => {                
+
+						if (ultima_posicao == null) {
+
+							novaPosicao(posicao_atual);
+							ultima_posicao = posicao_atual;
+						
+						}else if (ultima_posicao.coords.latitude != posicao_atual.coords.latitude || ultima_posicao.coords.longitude != posicao_atual.coords.longitude) {
+							
+							novaPosicao(posicao_atual);
+							ultima_posicao = posicao_atual;
+						}						
+					},
+
+					erro_possicao => {
+						console.log(erro_possicao);
+					},
+
+					{
+						enableHighAccuracy: true,
+						timeout: 5000,
+						maximumAge: 0
+					});				
+				} else {
+					alert("I'm sorry, but geolocation services are not supported by your browser.");
+				}
+		}
+	</script>
+</head>
+<body height="100%" width="100%">	
+	<h1>Coordenadas Dispositivo</h1>
+	<div class="container" height="500px">
+		<div class="row" height="500px">
+			<div class="col-12">
+				<exibidor-camera height="100%" width="100%"></exibidor-camera>
+			</div>
+		</div>
+		<div class="row" height="500px">
+			<div class="col-4">
+				<ul id="lista_coordenadas">						
+				</ul>
+			</div>
+			<div class="col-8">
+				<canvas id="myChart" height="100%" width="100%"></canvas>
+			</div>			
+		</div>
+	</div>
+</body>
+</html>

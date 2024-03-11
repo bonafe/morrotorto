@@ -1,0 +1,261 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="author" content="Área de Preservação Ambiental do Morro Torto">
+    <meta name="description" content="Index do site da Área de Preservação Ambiental do Morro Torto - Indaiatuba - SP">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<style>
+		html,
+		body,
+		.container-fluid {
+		  height: 100%;
+		}
+	
+		canvas {
+		  width: 100%;
+		  height: 100%;
+		}
+	  </style>
+	<script type="module">
+		import { ExibidorCamera } from './exibidor_camera.js';
+	</script>
+	<script src="./ml.min.js"></script>
+	<script>
+
+		let coordenadas = [];
+		let centroides = [];
+		let distancias_centroides = [];
+
+		let estado = "aguardando";
+
+		window.pressinouBotao = () => {
+
+			if (estado.localeCompare("aguardando") == 0) {
+				coordenadas = [];
+				estado = "capturando_posicao";
+				document.getElementById("botao").innerHTML = "Digitar altura ponto";
+
+			}else if (estado.localeCompare("capturando_posicao") == 0) {
+
+				estado = "capturando_altura";
+				document.getElementById("botao").innerHTML = "Capturar ponto";
+			}
+
+		};
+
+		window.onload = () => {															
+
+		
+			
+			let chartCoordenadas = new Chart(document.getElementById('coordenadas').getContext('2d'), {
+				type: 'scatter',
+				data: {
+					datasets: [{						
+						data: []
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							type: 'linear',
+							position: 'bottom'
+						}
+					}
+				}
+			});
+
+			let chartCentroides = new Chart(document.getElementById('centroides').getContext('2d'), {
+				type: 'scatter',
+				data: {
+					datasets: [{						
+						data: []
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							type: 'linear',
+							position: 'bottom'
+						}
+					}
+				}
+			});
+
+			let chartDistanciasCentroides = new Chart(document.getElementById('distancias_centroides').getContext('2d'), {
+				type: 'scatter',
+				data: {
+					datasets: [{						
+						data: []
+					}]
+				},
+				options: {
+					scales: {
+						x: {
+							type: 'linear',
+							position: 'bottom'
+						}
+					}
+				}
+			});
+
+			if ("geolocation" in navigator) {
+
+				let ultima_posicao = null;				
+
+
+
+				function calcularCentroide(coordenadas) {
+
+					let totalPontos = coordenadas.length;
+					let somaX = 0;
+					let somaY = 0;
+
+					// Soma todas as coordenadas x e y
+					for (let i = 0; i < totalPontos; i++) {
+						somaX += coordenadas[i][0];
+						somaY += coordenadas[i][1];
+					}
+
+					// Calcula as médias das coordenadas x e y
+					let mediaX = somaX / totalPontos;
+					let mediaY = somaY / totalPontos;
+
+					// Retorna as coordenadas do centroide
+					return [mediaX, mediaY];
+				}
+	
+
+				function calcularDistancia(coord1, coord2) {
+					const earthRadius = 6371; // Raio médio da Terra em quilômetros
+					const lat1 = coord1[0];
+					const lon1 = coord1[1];
+					const lat2 = coord2[0];
+					const lon2 = coord2[1];
+
+					const dLat = toRadians(lat2 - lat1);
+					const dLon = toRadians(lon2 - lon1);
+
+					const a =
+						Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+						Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
+						Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+					const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+					const distance = earthRadius * c * 1000; // Distância em metros
+
+					return distance;
+				}
+
+				function toRadians(degrees) {
+					return degrees * (Math.PI / 180);
+				}
+
+				function novaPosicao(posicao){
+
+					console.log(`${posicao.coords.latitude} - ${posicao.coords.longitude}`);
+
+					coordenadas.push([posicao.coords.latitude, posicao.coords.longitude]);
+
+					centroides.push(calcularCentroide(coordenadas));
+
+					if (centroides.length > 1) {
+						distancias_centroides.push([centroides.length, calcularDistancia(centroides[centroides.length - 1], centroides[centroides.length - 2])]);
+						let ul = document.getElementById("lista");
+						let li = document.createElement("li");
+						li.appendChild(document.createTextNode(`${distancias_centroides[distancias_centroides.length - 1][1]}`));
+						ul.appendChild(li);
+					}					
+
+					chartCoordenadas.data.datasets[0].data = coordenadas.map(c => {
+						return {
+							x: c[1],
+							y: c[0],						
+						};
+					});
+					chartCoordenadas.update();
+
+					chartCentroides.data.datasets[0].data = centroides.map(c => {
+						return {
+							x: c[1],
+							y: c[0],						
+						};
+					});
+					chartCentroides.update();
+
+					chartDistanciasCentroides.data.datasets[0].data = distancias_centroides.map(c => {
+						return {
+							x: c[0],
+							y: c[1],						
+						};
+					});
+					chartDistanciasCentroides.update();					
+				}
+
+
+				navigator.geolocation.watchPosition( 
+
+					posicao_atual => {                
+
+						console.log(posicao_atual);
+
+						if (estado.localeCompare("capturando_posicao") == 0) {
+
+							if (ultima_posicao == null) {
+
+								novaPosicao(posicao_atual);
+								ultima_posicao = posicao_atual;
+							
+							}else if (ultima_posicao.coords.latitude != posicao_atual.coords.latitude || ultima_posicao.coords.longitude != posicao_atual.coords.longitude) {
+								
+								novaPosicao(posicao_atual);
+								ultima_posicao = posicao_atual;
+							}						
+						}
+					},
+
+					erro_possicao => {
+						console.log(erro_possicao);
+					},
+
+					{
+						enableHighAccuracy: true,
+						timeout: 500,
+						maximumAge: 0
+					});				
+				} else {
+					alert("I'm sorry, but geolocation services are not supported by your browser.");
+				}
+		}
+	</script>
+</head>
+<body>		
+	<div class="container-fluid h-100">
+		<!--div class="row" height="500px">
+			<div class="col-12">
+				<exibidor-camera height="100%" width="100%"></exibidor-camera>
+			</div>
+		</div-->
+		<div class="row">
+			<div class="col-6 mx-auto my-auto text-center">
+				<button id="botao" onclick="window.pressinouBotao();">Iniciar</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-4">
+				<canvas id="coordenadas"></canvas>
+			</div>			
+			<div class="col-4">
+				<canvas id="centroides"></canvas>
+			</div>			
+			<div class="col-4">
+				<canvas id="distancias_centroides"></canvas>
+			</div>			
+		</div>
+		<div class="row">
+			<ul id="lista" class="list-group">
+			</ul>
+	</div>
+</body>
+</html>

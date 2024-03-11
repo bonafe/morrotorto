@@ -16,7 +16,7 @@ export class MapaNascentes{
         this.criarCamadaBaciasHidrograficas();
         this.criarTituloELegendas();
         this.tratarRedimensionamento();
-        //this.processarLocalDoUsuario();
+        this.processarLocalDoUsuario();
 
         this.nascentesMapa = [];
     }
@@ -200,7 +200,7 @@ export class MapaNascentes{
             color: 'red',
             fillColor: '#f03',
             fillOpacity: 0.5,
-            radius: 500
+            radius: 5
         });
     }
 
@@ -208,11 +208,30 @@ export class MapaNascentes{
 
     processarLocalDoUsuario(){
         if ("geolocation" in navigator) {
-            navigator.geolocation.getCurrentPosition( position => {
 
-                this.criarMarcaLocalUsuario(position.coords.latitude, position.coords.longitude).addTo(this.mapa);
+            var altitudes = [];
+
+            //var heat = L.heatLayer([], {radius: 25}).addTo(this.mapa);
+
+            navigator.geolocation.getCurrentPosition( position => {
                 this.mapa.setView([position.coords.latitude, position.coords.longitude], 15);
-                console.log(`${position.coords.latitude} - ${position.coords.longitude}`);
+            });
+
+            navigator.geolocation.watchPosition( position => {
+
+                altitudes.push(position.coords.altitude);
+                
+                let altitude_minima = altitudes.reduce((min, altitude) => altitude < min ? altitude : min, altitudes[0]);
+				let altitude_maxima = altitudes.reduce((max, altitude) => altitude > max ? altitude : max, altitudes[0]);
+                let amplitude = altitude_maxima - altitude_minima;
+                let proporcao_vermelho = (position.coords.altitude - altitude_minima) / amplitude * 255;
+                let cor = `rgba(${proporcao_vermelho}, 0, 0, 0.5)`;
+
+                this.criarMarcaLocalUsuario(position.coords.latitude, position.coords.longitude).addTo(this.mapa);                                			
+
+                //this.mapa.setView([position.coords.latitude, position.coords.longitude], 15);
+                console.log(`${position.coords.latitude} - ${position.coords.longitude} - ${position.coords.altitude} - ${cor}`);
+                
             });
         } else {
             alert("I'm sorry, but geolocation services are not supported by your browser.");
