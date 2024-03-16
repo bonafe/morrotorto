@@ -77,9 +77,6 @@ export class CaptadorCoordenadas extends EventTarget{
                 this.adicionar_posicao(posicao_atual);
                 this.ultima_posicao = posicao_atual;
 
-            } else {
-
-                this.playBeep();
             }
 
             if (this.posiciao_estavel()){

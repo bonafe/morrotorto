@@ -9,8 +9,13 @@ export class RegistroNivel{
         this.leituras = [];
     }
 
-    adicionar_referencia(coordenada, nivel, data){
-        this.referencia = coordenada;
+    definir_referencia(latitude, longitude, nivel, data){
+        this.referencia = {
+            latitudade: latitude,
+            longitude: longitude,
+            nivel: nivel,
+            data: data
+        };        
     }
 
     adicionar_leitura(coordenada, nivel, data){

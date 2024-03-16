@@ -17,39 +17,30 @@
 		  width: 100%;
 		  height: 100%;
 		}
-	  </style>	
-	<script type="module">
-
-		import { CaptadorCoordenadas } from './captador_coordenadas.js';
-
-		window.captadorCoordenadas = new CaptadorCoordenadas();
-		
-
-		document.querySelector("#btn").addEventListener('click', () => {
-
-			document.querySelector("#btn").textContent = "Capturando coordenadas...";
-			document.querySelector("#btn").disabled = true;			
-
-			window.captadorCoordenadas.iniciar_captura_coordenadas();
-		});
-
-
-		window.captadorCoordenadas.addEventListener('capturou_coordenada', (evento) => {
-
-			const coordenada = evento.detail;
-
-			document.querySelector("#btn").textContent = "Iniciar captura de coordenadas";
-			document.querySelector("#btn").disabled = false;
-
-			document.querySelector("#lista").appendChild(document.createElement("li")).textContent = JSON.stringify(coordenada);
-		});
-				
-
-	</script>
+	  </style>
+	  <script src="./curvanivel.js" type="module"></script>	
 </head>
 <body>			
-	<button id="btn" class="btn btn-primary">Iniciar captura de coordenadas</button>
-	<ul id="lista" class="list-group">
-	</ul>	
+	<div id="iniciar_registro">
+		<button id="btn_iniciar_registro" class="btn btn-primary">Iniciar Registro</button>
+	</div>	
+	<template id="leitura_nivel">
+		<div id="container_leitura">
+			<h1 id="titulo"></h1>
+			<button id="btn_buscar" class="btn btn-primary">Buscar Coordenadas</button>
+			<div>
+				<span>Latitude:</span><span id="latitude"></span>
+			</div>
+			<div>				
+				<span>Longitude:</span><span id="longitude"></span>
+			</div>
+			<div>
+				<span>Altura:</span><input type="text" id="altura_referencia" value="0" />
+			</div>
+			<button id="btn_salvar" class="btn btn-primary">Salvar</button>
+		</div>	
+	</template>
+	<div id="area_leitura">
+	</div>	
 </body>
 </html>
