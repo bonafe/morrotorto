@@ -1,28 +1,39 @@
 
 
 
-class CaptadorCoordenadas {
+export class CaptadorCoordenadas extends EventTarget{
 
 
     constructor() {
+        super();
+
         this.ultima_posicao = null;
         this.coordenadas = [];
+
         this.centroides = [];  
         this.distancias_centroides = [];
-        this.estado = "capturando_posicao";
-        this.iniciar_gps();
+
+        this.estado = "aguardando_inicio";        
     }
 
 
+    capturando_coordenadas(){
+        return this.estado.localeCompare("capturando_coordenada") == 0;
+    }
+    
 
     iniciar_gps(){
 
         if ("geolocation" in navigator) {
             				
-            navigator.geolocation.watchPosition(
+            navigator.geolocation.watchPosition(                
+                () => {
 
-                //Quando a posição é detectada pelo serviço de GeoLocalização do navegador
-                this.nova_posicao_detectada.bind(this), 
+                    this.playBeep(4, 1000);
+
+                    //Quando a posição é detectada pelo serviço de GeoLocalização do navegador
+                    this.nova_posicao_detectada.bind(this); 
+                },
 
                 //Quando ocorre um erro ao tentar detectar a posição
                 erro_possicao => {
@@ -44,14 +55,15 @@ class CaptadorCoordenadas {
     
 
     iniciar_captura_coordenadas(){
-        this.estado = "capturando_posicao";
+        this.estado = "capturando_coordenada";
+        this.iniciar_gps();
     }
 
 
 
     nova_posicao_detectada(posicao_atual){          
 
-        if (this.estado.localeCompare("capturando_posicao") == 0) {
+        if (this.estado.localeCompare("capturando_coordenada") == 0) {
 
             if (this.ultima_posicao == null) {
 
@@ -65,12 +77,28 @@ class CaptadorCoordenadas {
                 this.adicionar_posicao(posicao_atual);
                 this.ultima_posicao = posicao_atual;
 
-                if (this.posiciao_esta)
-            }						
+                if (this.posiciao_estavel()){
+
+                    this.estado = "capturou_coordenada";                    
+                    this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: this.calcularCentroide(this.coordenadas)}}));
+                }
+
+            }else{
+
+                this.playBeep();
+            }					
         }            
     }
 
 
+    posiciao_estavel(){
+
+        const numero_leituras = 1;
+
+        this.playBeep(2, Math.floor((this.distancias_centroides.length / numero_leituras) * 1000));
+
+        return this.distancias_centroides.length >= numero_leituras;
+    }
 
     adicionar_posicao(posicao){
 
@@ -78,7 +106,7 @@ class CaptadorCoordenadas {
 
         this.coordenadas.push([posicao.coords.latitude, posicao.coords.longitude]);
 
-        this.centroides.push(this.calcularCentroide(coordenadas));
+        this.centroides.push(this.calcularCentroide(this.coordenadas));
 
         if (this.centroides.length > 1) {
             
@@ -135,5 +163,29 @@ class CaptadorCoordenadas {
 
     toRadians(degrees) {
         return degrees * (Math.PI / 180);
+    }
+
+
+    playBeep(tipo=1, frequencia=1000) {
+
+        let audioContext = new AudioContext();
+
+        let oscillator = audioContext.createOscillator();
+
+        let tipos ={
+            1: "sine",
+            2: "square",
+            3: "sawtooth",
+            4: "triangle"
+        }
+
+        oscillator.type = tipos[tipo];
+        oscillator.frequency.setValueAtTime(frequencia, audioContext.currentTime);
+        
+        oscillator.connect(audioContext.destination);
+        
+        oscillator.start();
+
+        setTimeout(() => oscillator.stop(), 100);
     }
 }
