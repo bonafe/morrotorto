@@ -4,11 +4,20 @@
 export class CaptadorCoordenadas extends EventTarget{
 
 
+    static getInstance(){
+        if (CaptadorCoordenadas.instance == null){
+            CaptadorCoordenadas.instance = new CaptadorCoordenadas();
+        }
+
+        return CaptadorCoordenadas.instance;
+    }
+
+
     constructor() {
         super();
 
         this.ultima_posicao = null;
-        this.coordenadas = [];
+        this.lista_coordenadas = [];
 
         this.centroides = [];  
         this.distancias_centroides = [];
@@ -82,7 +91,7 @@ export class CaptadorCoordenadas extends EventTarget{
             if (this.posiciao_estavel()){
                 navigator.geolocation.clearWatch(this.id_watch_position);
                 this.estado = "capturou_coordenada";
-                const coordenadas = this.calcularCentroide(this.coordenadas);
+                const coordenadas = this.calcularCentroide(this.lista_coordenadas);
                 this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: {
                     latitude: coordenadas[0],
                     longitude: coordenadas[1]
@@ -98,16 +107,16 @@ export class CaptadorCoordenadas extends EventTarget{
 
         this.playBeep(2, Math.floor((this.distancias_centroides.length / numero_leituras) * 1000));
 
-        return this.coordenadas.length >= numero_leituras;
+        return this.lista_coordenadas.length >= numero_leituras;
     }
 
     adicionar_posicao(posicao){
 
         console.log(`${posicao.coords.latitude} - ${posicao.coords.longitude}`);
 
-        this.coordenadas.push([posicao.coords.latitude, posicao.coords.longitude]);
+        this.lista_coordenadas.push([posicao.coords.latitude, posicao.coords.longitude]);
 
-        this.centroides.push(this.calcularCentroide(this.coordenadas));
+        this.centroides.push(this.calcularCentroide(this.lista_coordenadas));
 
         if (this.centroides.length > 1) {
             
