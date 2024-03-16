@@ -58,7 +58,7 @@ window.addEventListener('load', () => {
 
         captadorCoordenadas.addEventListener('capturou_coordenada', (evento) => {
 
-            const coordenada = evento.detail;
+            const coordenada = evento.detail.coordenadas;
 
             const latitude = area_leitura.querySelector("#latitude");
             const longitude = area_leitura.querySelector("#longitude");  

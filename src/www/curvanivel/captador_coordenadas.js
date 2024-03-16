@@ -80,9 +80,13 @@ export class CaptadorCoordenadas extends EventTarget{
             }
 
             if (this.posiciao_estavel()){
-                this.estado = "capturou_coordenada";                    
                 navigator.geolocation.clearWatch(this.id_watch_position);
-                this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: this.calcularCentroide(this.coordenadas)}}));
+                this.estado = "capturou_coordenada";
+                const coordenadas = this.calcularCentroide(this.coordenadas);
+                this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: {
+                    latitude: coordenadas[0],
+                    longitude: coordenadas[1]
+                }}}));
             }	
         }            
     }
