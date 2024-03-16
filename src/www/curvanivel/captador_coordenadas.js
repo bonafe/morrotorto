@@ -27,12 +27,12 @@ export class CaptadorCoordenadas extends EventTarget{
         if ("geolocation" in navigator) {
             				
             navigator.geolocation.watchPosition(                
-                () => {
+                posicao_atual => {
 
                     this.playBeep(4, 1000);
 
                     //Quando a posição é detectada pelo serviço de GeoLocalização do navegador
-                    this.nova_posicao_detectada.bind(this); 
+                    this.nova_posicao_detectada(posicao_atual); 
                 },
 
                 //Quando ocorre um erro ao tentar detectar a posição
@@ -71,22 +71,21 @@ export class CaptadorCoordenadas extends EventTarget{
                 this.ultima_posicao = posicao_atual;
             
 
-            }else if ((this.ultima_posicao.coords.latitude != posicao_atual.coords.latitude) || 
+            } else if ((this.ultima_posicao.coords.latitude != posicao_atual.coords.latitude) || 
                         (this.ultima_posicao.coords.longitude != posicao_atual.coords.longitude)) {
                 
                 this.adicionar_posicao(posicao_atual);
                 this.ultima_posicao = posicao_atual;
 
-                if (this.posiciao_estavel()){
-
-                    this.estado = "capturou_coordenada";                    
-                    this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: this.calcularCentroide(this.coordenadas)}}));
-                }
-
-            }else{
+            } else {
 
                 this.playBeep();
-            }					
+            }
+
+            if (this.posiciao_estavel()){
+                this.estado = "capturou_coordenada";                    
+                this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: this.calcularCentroide(this.coordenadas)}}));
+            }	
         }            
     }
 
@@ -97,7 +96,7 @@ export class CaptadorCoordenadas extends EventTarget{
 
         this.playBeep(2, Math.floor((this.distancias_centroides.length / numero_leituras) * 1000));
 
-        return this.distancias_centroides.length >= numero_leituras;
+        return this.coordenadas.length >= numero_leituras;
     }
 
     adicionar_posicao(posicao){
