@@ -22,7 +22,7 @@ class CaptadorCoordenadas {
             navigator.geolocation.watchPosition(
 
                 //Quando a posição é detectada pelo serviço de GeoLocalização do navegador
-                this.nova_posicao_detecatada.bind(this), 
+                this.nova_posicao_detectada.bind(this), 
 
                 //Quando ocorre um erro ao tentar detectar a posição
                 erro_possicao => {
@@ -48,9 +48,10 @@ class CaptadorCoordenadas {
     }
 
 
-    nova_posicao_detecatada(posicao_atual){          
 
-        if (estado.localeCompare("capturando_posicao") == 0) {
+    nova_posicao_detectada(posicao_atual){          
+
+        if (this.estado.localeCompare("capturando_posicao") == 0) {
 
             if (this.ultima_posicao == null) {
 
@@ -63,6 +64,8 @@ class CaptadorCoordenadas {
                 
                 this.adicionar_posicao(posicao_atual);
                 this.ultima_posicao = posicao_atual;
+
+                if (this.posiciao_esta)
             }						
         }            
     }
