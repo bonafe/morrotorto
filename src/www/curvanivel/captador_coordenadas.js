@@ -26,7 +26,7 @@ export class CaptadorCoordenadas extends EventTarget{
 
         if ("geolocation" in navigator) {
             				
-            navigator.geolocation.watchPosition(                
+            this.id_watch_position = navigator.geolocation.watchPosition(                
                 posicao_atual => {
 
                     this.playBeep(4, 1000);
@@ -81,6 +81,7 @@ export class CaptadorCoordenadas extends EventTarget{
 
             if (this.posiciao_estavel()){
                 this.estado = "capturou_coordenada";                    
+                navigator.geolocation.clearWatch(this.id_watch_position);
                 this.dispatchEvent(new CustomEvent('capturou_coordenada', {detail: {coordenadas: this.calcularCentroide(this.coordenadas)}}));
             }	
         }            
