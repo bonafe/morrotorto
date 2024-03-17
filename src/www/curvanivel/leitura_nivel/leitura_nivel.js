@@ -1,5 +1,5 @@
 
-import { CaptadorCoordenadas } from '../captador_coordenadas.js';
+import { CaptadorCoordenadas } from '../captador_coordenadas/captador_coordenadas.js';
 
 
 export class LeituraNivel extends HTMLElement{
@@ -42,7 +42,7 @@ export class LeituraNivel extends HTMLElement{
         });
 
 
-        CaptadorCoordenadas.getInstance().addEventListener('capturou_coordenada', (evento) => {
+        CaptadorCoordenadas.getInstance().addEventListener(CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS, (evento) => {
 
             const coordenadas = evento.detail.coordenadas;
 
