@@ -72,41 +72,22 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
 
         this.opcoes_grafico_coordenadas = {
             title: 'Coordenadas',
-            hAxis: {
-                title: 'Latitude', 
-                minValue: -23.07, 
-                maxValue: -23.03, 
-                viewWindow: {
-                    min: -23.07,
-                    max: -23.03
+            hAxis: {title: 'Latitude', viewWindow:{}},            
+            vAxis: {title: 'Longitude', viewWindow:{}},            
+            legend: 'none',
+            series: {
+                0: { // Série para as coordenadas (azul)
+                    color: 'blue'
+                },
+                1: { // Série para os centroides (laranja)
+                    color: 'orange'
                 }
-            },
-            vAxis: {
-                title: 'Longitude', 
-                minValue: -47.25, 
-                maxValue: -47.18,                 
-                viewWindow: {
-                    min: -47.25,
-                    max: -47.18
-                }
-            },            
-            legend: 'none'
+            }
         };
 
         this.grafico_coordenadas = new google.visualization.ScatterChart(this.shadow.getElementById('coordenadas'));
 
-        
-        //***********************
-        //Gráfico de centroides
-        //***********************
-        this.opcoes_grafico_centroides = {
-            title: 'Centróides',
-            hAxis: {title: 'Latitude'},
-            vAxis: {title: 'Longitude'},
-            legend: 'none'
-        };
 
-        this.grafico_centroides = new google.visualization.ScatterChart(this.shadow.getElementById('centroides'));
 
 
 
@@ -115,8 +96,8 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
         //***********************
         this.opcoes_grafico_distancia_centroides = {
             title: 'Centróides',
-            hAxis: {title: 'Latitude'},
-            vAxis: {title: 'Longitude'},
+            hAxis: {title: 'Latitude', viewWindow:{}},
+            vAxis: {title: 'Longitude', viewWindow:{}},
             legend: 'none'
         };
 
@@ -127,71 +108,67 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
     }
 
 
+    atualizar_grafico(grafico, opcoes_grafico, lista_informacoes_geograficas, centroides){
+
+        let data = new google.visualization.DataTable();
+
+        data.addColumn('number', 'Latitude');
+        data.addColumn('number', 'Longitude'); 
+        data.addColumn({type: 'string', role: 'style'});
+
+        let array_google_coordenadas = [];
+
+        lista_informacoes_geograficas.forEach(informacoes_geografica => {            
+
+            array_google_coordenadas.push([informacoes_geografica.latitude , informacoes_geografica.longitude, 'point { size: 3; shape-type: circle; fill-color: #4285F4; }']);
+        });
+        
+        centroides.forEach(coordenada => {            
+
+            array_google_coordenadas.push([coordenada[0], coordenada[1], 'point { size: 3; shape-type: circle; fill-color: #DB4437; }']);
+        });
+
+        data.addRows(array_google_coordenadas);
+
+        let latitude_minima = Math.min.apply(null, CaptadorCoordenadas.getInstance().lista_informacoes_geograficas.map(c => c.latitude));
+        let latitude_maxima = Math.max.apply(null, CaptadorCoordenadas.getInstance().lista_informacoes_geograficas.map(c => c.latitude));
+        let longitude_minima = Math.min.apply(null, CaptadorCoordenadas.getInstance().lista_informacoes_geograficas.map(c => c.longitude));
+        let longitude_maxima = Math.max.apply(null, CaptadorCoordenadas.getInstance().lista_informacoes_geograficas.map(c => c.longitude));    
+
+        
+
+        opcoes_grafico.hAxis.minValue = latitude_minima;
+        opcoes_grafico.hAxis.viewWindow.min = latitude_minima;
+        
+
+        opcoes_grafico.hAxis.maxValue = latitude_maxima;
+        opcoes_grafico.hAxis.viewWindow.max = latitude_maxima;
+
+
+        opcoes_grafico.vAxis.minValue = longitude_minima;
+        opcoes_grafico.vAxis.viewWindow.min = longitude_minima;
+
+        opcoes_grafico.vAxis.maxValue = longitude_maxima;
+        opcoes_grafico.vAxis.viewWindow.max = longitude_maxima;        
+
+
+        grafico.draw(data, opcoes_grafico);  
+    }
 
     atualizar_graficos(){
 
 
-        if (CaptadorCoordenadas.getInstance().lista_coordenadas.length == 0) {
+        if (CaptadorCoordenadas.getInstance().lista_informacoes_geograficas.length == 0) {
             return;
         }
 
-        let array_google_coordenadas = [
-
-            //Primeira linha é o cabeçalho
-            ['Latitude','Longitude']                  
-        ];
-
-        CaptadorCoordenadas.getInstance().lista_coordenadas.forEach(coordenada => {            
-            array_google_coordenadas.push([coordenada[0], coordenada[1]]);
-        });
-
-
-        let latitude_minima = Math.min.apply(null, CaptadorCoordenadas.getInstance().lista_coordenadas.map(c => c[0]));
-        let latitude_maxima = Math.max.apply(null, CaptadorCoordenadas.getInstance().lista_coordenadas.map(c => c[0]));
-        let longitude_minima = Math.min.apply(null, CaptadorCoordenadas.getInstance().lista_coordenadas.map(c => c[1]));
-        let longitude_maxima = Math.max.apply(null, CaptadorCoordenadas.getInstance().lista_coordenadas.map(c => c[1]));    
-
         
-
-        this.opcoes_grafico_coordenadas.hAxis.minValue = latitude_minima;
-        this.opcoes_grafico_coordenadas.hAxis.viewWindow.min = latitude_minima;
-        
-
-        this.opcoes_grafico_coordenadas.hAxis.maxValue = latitude_maxima;
-        this.opcoes_grafico_coordenadas.hAxis.viewWindow.max = latitude_maxima;
-
-
-        this.opcoes_grafico_coordenadas.vAxis.minValue = longitude_minima;
-        this.opcoes_grafico_coordenadas.vAxis.viewWindow.min = longitude_minima;
-
-        this.opcoes_grafico_coordenadas.vAxis.maxValue = longitude_maxima;
-        this.opcoes_grafico_coordenadas.vAxis.viewWindow.max = longitude_maxima;        
-
-
-        this.grafico_coordenadas.draw(
-            
-            //Transforma em DataTable do google
-            google.visualization.arrayToDataTable(array_google_coordenadas),
-
-            //Opções do gráfico
-            this.opcoes_grafico_coordenadas);        
-
-        /**
-        chartCentroides.data.datasets[0].data = CaptadorCoordenadas.getInstance().centroides.map(c => {
-            return {
-                x: c[1],
-                y: c[0],						
-            };
-        });        
-
-        chartDistanciasCentroides.data.datasets[0].data = CaptadorCoordenadas.getInstance().distancias_centroides.map(c => {
-            return {
-                x: c[0],
-                y: c[1],						
-            };
-        });        
-        **/
-        
+        this.atualizar_grafico(
+            this.grafico_coordenadas, 
+            this.opcoes_grafico_coordenadas, 
+            CaptadorCoordenadas.getInstance().lista_informacoes_geograficas,
+            CaptadorCoordenadas.getInstance().centroides);
+      
     }
 
 

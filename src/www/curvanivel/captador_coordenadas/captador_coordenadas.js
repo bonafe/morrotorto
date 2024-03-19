@@ -21,13 +21,7 @@ export class CaptadorCoordenadas extends EventTarget{
     constructor() {
         super();
 
-        this.ultima_posicao = null;
-        this.lista_coordenadas = [];
-
-        this.centroides = [];  
-        this.distancias_centroides = [];
-
-        this.estado = CaptadorCoordenadas.EVENTO_AGUARDANDO_INICIO;        
+        this.limpar();        
     }
 
 
@@ -67,48 +61,45 @@ export class CaptadorCoordenadas extends EventTarget{
     
 
     iniciar_captura_coordenadas(){
-        this.estado = CaptadorCoordenadas.EVENTO_CAPTURANDO_COORDENADAS;
 
-        //limpar lista de coordenadas
-        this.lista_coordenadas = [];
-        this.centroides = [];
-        this.distancias_centroides = [];        
+        //this.limpar();
+
+        this.estado = CaptadorCoordenadas.EVENTO_CAPTURANDO_COORDENADAS;             
 
         this.iniciar_gps();
     }
 
+    limpar(){
+        this.lista_informacoes_geograficas = [];
+        this.centroides = [];
+        this.distancias_centroides = [];
+        this.dados_geolocation_api_anterior = null;
+        this.estado = CaptadorCoordenadas.EVENTO_AGUARDANDO_INICIO;
+    }
 
+    nova_posicao_detectada(dados_geolocation_api_atual){          
 
-    nova_posicao_detectada(posicao_atual){          
-
-        window.log(`watch gps: ${posicao_atual.coords.latitude} - ${posicao_atual.coords.longitude}`);
+        window.log(`watch gps: ${dados_geolocation_api_atual.coords.latitude} - ${dados_geolocation_api_atual.coords.longitude}`);
 
         if (this.estado == CaptadorCoordenadas.EVENTO_CAPTURANDO_COORDENADAS) {
 
-            if (this.ultima_posicao == null) {
+            if (this.dados_geolocation_api_anterior == null) {
 
-                this.adicionar_posicao(posicao_atual);
-                this.ultima_posicao = posicao_atual;
+                this.adicionar_posicao(dados_geolocation_api_atual);
+                this.dados_geolocation_api_anterior = dados_geolocation_api_atual;
             
 
-            } else if ((this.ultima_posicao.coords.latitude != posicao_atual.coords.latitude) || 
-                        (this.ultima_posicao.coords.longitude != posicao_atual.coords.longitude)) {                                
+            } else if ((this.dados_geolocation_api_anterior.coords.latitude != dados_geolocation_api_atual.coords.latitude) || 
+                        (this.dados_geolocation_api_anterior.coords.longitude != dados_geolocation_api_atual.coords.longitude)) {                                
 
-                this.adicionar_posicao(posicao_atual);
-                this.ultima_posicao = posicao_atual;
+                this.adicionar_posicao(dados_geolocation_api_atual);
+                this.dados_geolocation_api_anterior = dados_geolocation_api_atual;
             }
 
 
-            this.dispatchEvent(new CustomEvent(
-
-                CaptadorCoordenadas.EVENTO_RECEBEU_COORDENADA , 
-
-                {
+            this.dispatchEvent(new CustomEvent(CaptadorCoordenadas.EVENTO_RECEBEU_COORDENADA,{
                     detail: {
-                        coordenadas: {
-                            latitude: this.ultima_posicao.coords.latitude,
-                            longitude: this.ultima_posicao.coords.longitude
-                        }
+                        informacoes_geograficas: this.criar_informacoes_geograficas(dados_geolocation_api_atual) 
                     }
                 }
             ));
@@ -121,14 +112,34 @@ export class CaptadorCoordenadas extends EventTarget{
 
                 this.estado = CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS;
 
-                const coordenadas = this.calcularCentroide(this.lista_coordenadas);
+                const coordenadas_centroid = this.calcularCentroide(this.lista_informacoes_geograficas);
 
-                this.dispatchEvent(new CustomEvent(CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS, {detail: {coordenadas: {
-                    latitude: coordenadas[0],
-                    longitude: coordenadas[1]
-                }}}));
+                let informacoes_geograficas = this.criar_informacoes_geograficas(dados_geolocation_api_atual);
+
+                informacoes_geograficas.latitude = coordenadas_centroid[0];
+                informacoes_geograficas.longitude = coordenadas_centroid[1];
+
+                this.dispatchEvent(new CustomEvent(CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS, {                    
+                    detail: {
+                        informacoes_geograficas: informacoes_geograficas                       
+                    }
+                }));
             }	
         }            
+    }
+
+
+    criar_informacoes_geograficas(dados_geolocation_api){
+        return {
+            latitude: dados_geolocation_api.coords.latitude,
+            longitude: dados_geolocation_api.coords.longitude,
+            altitude: dados_geolocation_api.coords.altitude,
+            precisao: dados_geolocation_api.coords.accuracy,
+            precisaoAltitude: dados_geolocation_api.coords.altitudeAccuracy,
+            direcao: dados_geolocation_api.coords.heading,
+            velocidade: dados_geolocation_api.coords.speed,
+            momentoRegistro: dados_geolocation_api.timestamp
+        }
     }
 
 
@@ -141,7 +152,9 @@ export class CaptadorCoordenadas extends EventTarget{
 
 
 
-    posiciao_estavel(){
+    posiciao_estavel(){        
+
+        return false;
 
         let numero_leituras = 0;
 
@@ -152,17 +165,17 @@ export class CaptadorCoordenadas extends EventTarget{
         //this.playBeep(2, Math.floor((this.distancias_centroides.length / numero_leituras) * 1000));
 
         //Log leitura x de y
-        window.log (`Leitura ${this.lista_coordenadas.length} de ${numero_leituras}`);
+        window.log (`Leitura ${this.lista_informacoes_geograficas.length} de ${numero_leituras} --- ${this.lista_informacoes_geograficas.length % numero_leituras ==  0}`);
         
-        return this.lista_coordenadas.length >= numero_leituras;
+        return this.lista_informacoes_geograficas.length % numero_leituras ==  0;
     }
 
-    adicionar_posicao(posicao){
+    adicionar_posicao(dados_geolocation_api){
 
-        this.lista_coordenadas.push([posicao.coords.latitude, posicao.coords.longitude]);
+        this.lista_informacoes_geograficas.push(this.criar_informacoes_geograficas(dados_geolocation_api));
 
 
-        this.centroides.push(this.calcularCentroide(this.lista_coordenadas));
+        this.centroides.push(this.calcularCentroide(this.lista_informacoes_geograficas));
 
         if (this.centroides.length > 1) {
             
@@ -176,16 +189,16 @@ export class CaptadorCoordenadas extends EventTarget{
 
 
 
-    calcularCentroide(coordenadas) {
+    calcularCentroide(lista_informacoes_geograficas) {
 
-        let totalPontos = coordenadas.length;
+        let totalPontos = lista_informacoes_geograficas.length;
         let somaX = 0;
         let somaY = 0;        
 
         // Soma todas as coordenadas x e y
         for (let i = 0; i < totalPontos; i++) {
-            somaX += coordenadas[i][0];
-            somaY += coordenadas[i][1];
+            somaX += lista_informacoes_geograficas[i].latitude;            
+            somaY += lista_informacoes_geograficas[i].longitude;
         }        
 
         // Calcula as médias das coordenadas x e y

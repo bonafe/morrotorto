@@ -44,13 +44,26 @@ export class LeituraNivel extends HTMLElement{
 
         CaptadorCoordenadas.getInstance().addEventListener(CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS, (evento) => {
 
-            const coordenadas = evento.detail.coordenadas;
+            const informacoes_geograficas = evento.detail.informacoes_geograficas;
 
+            //Recupera todos elementos de informacoes_geograficas
             const latitude = this.shadow.querySelector("#latitude");
-            const longitude = this.shadow.querySelector("#longitude");  
+            const longitude = this.shadow.querySelector("#longitude");
+            const precisao = this.shadow.querySelector("#precisao");
+            const altitude = this.shadow.querySelector("#altitude");
+            const velocidade = this.shadow.querySelector("#velocidade");
+            const direcao = this.shadow.querySelector("#direcao");
+            const momentoRegistro = this.shadow.querySelector("#momento_registro");
+        
             
-            latitude.textContent = coordenadas.latitude;
-            longitude.textContent = coordenadas.longitude;
+            latitude.textContent = informacoes_geograficas.latitude;
+            longitude.textContent = informacoes_geograficas.longitude;
+            precisao.textContent = informacoes_geograficas.precisao;
+            altitude.textContent = informacoes_geograficas.altitude;
+            velocidade.textContent = informacoes_geograficas.velocidade;
+            direcao.textContent = informacoes_geograficas.direcao;
+            momentoRegistro.textContent = informacoes_geograficas.momentoRegistro;
+
             
             btnBuscar.style.display = "block";
         });
