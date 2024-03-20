@@ -135,10 +135,11 @@ export class CaptadorCoordenadas extends EventTarget{
             longitude: dados_geolocation_api.coords.longitude,
             altitude: dados_geolocation_api.coords.altitude,
             precisao: dados_geolocation_api.coords.accuracy,
-            precisaoAltitude: dados_geolocation_api.coords.altitudeAccuracy,
+            precisao_altitude: dados_geolocation_api.coords.altitudeAccuracy,
             direcao: dados_geolocation_api.coords.heading,
             velocidade: dados_geolocation_api.coords.speed,
-            momentoRegistro: dados_geolocation_api.timestamp
+            momento_registro_gps: dados_geolocation_api.timestamp,
+            momento_registro_captador: new Date().getMilliseconds()
         }
     }
 

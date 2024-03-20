@@ -62,7 +62,7 @@ export class LeituraNivel extends HTMLElement{
             altitude.textContent = informacoes_geograficas.altitude;
             velocidade.textContent = informacoes_geograficas.velocidade;
             direcao.textContent = informacoes_geograficas.direcao;
-            momentoRegistro.textContent = informacoes_geograficas.momentoRegistro;
+            momentoRegistro.textContent = informacoes_geograficas.momento_registro;
 
             
             btnBuscar.style.display = "block";

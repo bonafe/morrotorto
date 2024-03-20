@@ -17,6 +17,10 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
         this.shadow = this.attachShadow({mode: 'open'});
         //this.shadow = this;
 
+        this.vermelho = this.gerarCores('r');
+        this.verde = this.gerarCores('g');
+        this.azul = this.gerarCores('b');
+
         fetch("./captador_coordenadas/visualizador_captador_coordenadas.html").then(resposta => 
             
             resposta.text().then(html => {
@@ -63,12 +67,6 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
 
 
     criar_graficos(){
-
-        //***********************
-        //Gráfico de coordenadas
-        //***********************
-        //-23.0380275, -47.1805553
-        //-23.0621184 - -47.2416256
 
         this.opcoes_grafico_coordenadas = {
             title: 'Coordenadas',
@@ -118,14 +116,28 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
 
         let array_google_coordenadas = [];
 
-        lista_informacoes_geograficas.forEach(informacoes_geografica => {            
 
-            array_google_coordenadas.push([informacoes_geografica.latitude , informacoes_geografica.longitude, 'point { size: 3; shape-type: circle; fill-color: #4285F4; }']);
+        lista_informacoes_geograficas.forEach((informacoes_geografica, indice) => {            
+
+   
+            let indice_cor = Math.floor((this.vermelho.length-1) * (indice / lista_informacoes_geograficas.length));
+
+            let cor = this.vermelho[indice_cor];            
+
+            let estilo = `point { size: 3; shape-type: circle; fill-color: ${cor}; }`;
+
+            array_google_coordenadas.push([informacoes_geografica.latitude , informacoes_geografica.longitude, estilo]);
         });
         
-        centroides.forEach(coordenada => {            
+        centroides.forEach( (coordenada, indice) => {            
 
-            array_google_coordenadas.push([coordenada[0], coordenada[1], 'point { size: 3; shape-type: circle; fill-color: #DB4437; }']);
+            let indice_cor = Math.floor((this.vermelho.length-1) * (indice / lista_informacoes_geograficas.length));
+
+            let cor = this.verde[indice_cor];
+
+            let estilo = `point { size: 4; shape-type: circle; fill-color: ${cor}; }`;            
+
+            array_google_coordenadas.push([coordenada[0], coordenada[1], estilo]);
         });
 
         data.addRows(array_google_coordenadas);
@@ -225,6 +237,30 @@ export class VisualizadorCaptadorCoordenadas extends HTMLElement{
                 }
             }
         });
+    }
+
+    gerarCores(canal) {
+        const numeroDeCores = 100; // Número de cores na lista
+        const cores = [];
+    
+        for (let i = (numeroDeCores-1); i >= 0; i--) {
+            
+            let valorHex = Math.round(255 * (1 - i / (numeroDeCores - 1))).toString(16).padStart(2, '0');            
+            
+            if (canal === 'r') {            
+                cores.push(`#${valorHex}0000`); // Vermelho com opacidade total
+                
+            } else if (canal === 'g') {                
+                cores.push(`#00${valorHex}00`); // Verde com opacidade total
+                
+            } else if (canal === 'b') {                
+                cores.push(`#0000${valorHex}`); // Azul com opacidade total
+            }
+        }
+    
+        console.dir(cores);
+
+        return cores;
     }
 }
 customElements.define('visualizador-captador-coordenadas', VisualizadorCaptadorCoordenadas);
