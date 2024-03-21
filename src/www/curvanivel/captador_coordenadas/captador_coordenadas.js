@@ -107,10 +107,10 @@ export class CaptadorCoordenadas extends EventTarget{
 
             if (this.posiciao_estavel()){
                 
-                navigator.geolocation.clearWatch(this.id_watch_position);
-                window.log(`removeu watch gps`);
+                //navigator.geolocation.clearWatch(this.id_watch_position);
+                //window.log(`removeu watch gps`);
 
-                this.estado = CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS;
+                //this.estado = CaptadorCoordenadas.EVENTO_COORDENADAS_ESTABILIZADAS;
 
                 const coordenadas_centroid = this.calcularCentroide(this.lista_informacoes_geograficas);
 
@@ -153,9 +153,7 @@ export class CaptadorCoordenadas extends EventTarget{
 
 
 
-    posiciao_estavel(){        
-
-        return false;
+    posiciao_estavel(){                
 
         let numero_leituras = 0;
 
@@ -166,7 +164,7 @@ export class CaptadorCoordenadas extends EventTarget{
         //this.playBeep(2, Math.floor((this.distancias_centroides.length / numero_leituras) * 1000));
 
         //Log leitura x de y
-        window.log (`Leitura ${this.lista_informacoes_geograficas.length} de ${numero_leituras} --- ${this.lista_informacoes_geograficas.length % numero_leituras ==  0}`);
+        //window.log (`Leitura ${this.lista_informacoes_geograficas.length} de ${numero_leituras} --- ${this.lista_informacoes_geograficas.length % numero_leituras ==  0}`);
         
         return this.lista_informacoes_geograficas.length % numero_leituras ==  0;
     }

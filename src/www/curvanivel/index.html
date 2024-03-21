@@ -1,41 +1,172 @@
-<html>
-<head>
-	<meta charset="UTF-8">
-	<meta name="author" content="Área de Preservação Ambiental do Morro Torto">
-    <meta name="description" content="Index do site da Área de Preservação Ambiental do Morro Torto - Indaiatuba - SP">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-	
-	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>Template básico</title>
+    <!-- Fonte Rawline-->
+    <link rel="stylesheet" href="https://cdngovbr-ds.estaleiro.serpro.gov.br/design-system/fonts/rawline/css/rawline.css"/>
+    <!-- Fonte Raleway-->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700,800,900&amp;display=swap"/>
+    <!-- Design System de Governo-->
+    <link rel="stylesheet" href="./govbr/core.css"/>
+    <!-- Fontawesome-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css"/>
 
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-	<style>
-		html,
-		body,
-		.container-fluid {
-		  height: 100%;
-		}
-	
-		canvas {
-		  width: 100%;
-		  height: 100%;
-		}
-	  </style>
-	  <script src="./curvanivel.js" type="module"></script>		  
-</head>
-<body>	
-	<div>	
-		<div>
-			<div id="iniciar_registro">
-				<button id="btn_iniciar_registro" class="btn btn-primary">Iniciar Registro</button>
-			</div>
-			<div id="area_leitura">				
-			</div>	
-			<visualizador-captador-coordenadas></visualizador-captador-coordenadas>
-		</div>
-		<div>
-			<ul id="log">				
-			</ul>
-		</div>
-	</div>
-</body>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  </head>
+  <body>
+    <div class="template-base">
+      <nav class="br-skiplink" role="menubar"><a class="br-item" href="#main-content" role="menuitem" accesskey="1">Ir para o conteúdo <span aria-hidden="true">(1/4)</span> <span aria-hidden="true" class="br-tag text ml-1">1</span></a><a class="br-item" href="#header-navigation" role="menuitem" accesskey="2">Ir para o menu <span aria-hidden="true">(2/4)</span> <span aria-hidden="true" class="br-tag text ml-1">2</span></a><a class="br-item" href="#main-searchbox" role="menuitem" accesskey="3">Ir para a busca <span aria-hidden="true">(3/4)</span> <span aria-hidden="true" class="br-tag text ml-1">3</span></a><a class="br-item" href="#footer" role="menuitem" accesskey="4">Ir para o rodapé <span aria-hidden="true">(4/4)</span> <span aria-hidden="true" class="br-tag text ml-1">4</span></a>
+      </nav>
+      <header class="br-header mb-4" id="header" data-sticky="data-sticky">
+        <div class="container-lg">
+          <div class="header-top">
+            <div class="header-menu">
+                <div class="header-menu-trigger" id="header-navigation">
+                  <button class="br-button small circle" type="button" aria-label="Menu" data-toggle="menu" data-target="#main-navigation" id="navigation"><i class="fas fa-bars" aria-hidden="true"></i>
+                  </button>
+                </div>                
+                <div class="header-info">
+                  <div class="header-title">Curva de Nível</div>
+                  <div class="header-subtitle">Planta Planimétrica</div>
+                </div>                
+            </div>            
+            <div class="header-actions">
+              <div class="header-links dropdown">
+                <button class="br-button circle small" type="button" data-toggle="dropdown" aria-label="Abrir Acesso Rápido"><i class="fas fa-ellipsis-v" aria-hidden="true"></i>
+                </button>
+                <div class="br-list">
+                  <div class="header">
+                    <div class="title">Acesso Rápido</div>
+                  </div><a class="br-item" href="javascript:void(0)">Link de acesso 1</a><a class="br-item" href="javascript:void(0)">Link de acesso 2</a><a class="br-item" href="javascript:void(0)">Link de acesso 3</a><a class="br-item" href="javascript:void(0)">Link de acesso 4</a>
+                </div>
+              </div><span class="br-divider vertical mx-half mx-sm-1"></span>
+              <div class="header-functions dropdown">
+                <button class="br-button circle small" type="button" data-toggle="dropdown" aria-label="Abrir Funcionalidades do Sistema"><i class="fas fa-th" aria-hidden="true"></i>
+                </button>
+                <div class="br-list">
+                  <div class="header">
+                    <div class="title">Funcionalidades do Sistema</div>
+                  </div>
+                  <div class="br-item">
+                    <button class="br-button circle small" type="button" aria-label="Funcionalidade 1"><i class="fas fa-chart-bar" aria-hidden="true"></i><span class="text">Funcionalidade 1</span>
+                    </button>
+                  </div>
+                  <div class="br-item">
+                    <button class="br-button circle small" type="button" aria-label="Funcionalidade 2"><i class="fas fa-headset" aria-hidden="true"></i><span class="text">Funcionalidade 2</span>
+                    </button>
+                  </div>
+                  <div class="br-item">
+                    <button class="br-button circle small" type="button" aria-label="Funcionalidade 3"><i class="fas fa-comment" aria-hidden="true"></i><span class="text">Funcionalidade 3</span>
+                    </button>
+                  </div>
+                  <div class="br-item">
+                    <button class="br-button circle small" type="button" aria-label="Funcionalidade 4"><i class="fas fa-adjust" aria-hidden="true"></i><span class="text">Funcionalidade 4</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="header-search-trigger">
+                <button class="br-button circle" type="button" aria-label="Abrir Busca" data-toggle="search" data-target=".header-search"><i class="fas fa-search" aria-hidden="true"></i>
+                </button>
+              </div>
+              <div class="header-login">
+                <div class="header-sign-in">
+                  <button class="br-sign-in small" type="button" data-trigger="login"><i class="fas fa-user" aria-hidden="true"></i><span class="d-sm-inline">Entrar</span>
+                  </button>
+                </div>
+                <div class="header-avatar"></div>
+              </div>
+            </div>
+          </div>                    
+        </div>
+      </header>
+      <main class="d-flex flex-fill mb-5" id="main">
+        <div class="container-lg d-flex">
+          <div class="row">
+            <div class="br-menu" id="main-navigation">
+              <div class="menu-container">
+                <div class="menu-panel">
+                  <div class="menu-header">
+                    <div class="menu-title"><img src="./img/logo_morro_torto_pequeno.png" alt="Imagem ilustrativa"/><span>Curva de Nível</span></div>
+                    <div class="menu-close">
+                      <button class="br-button circle" type="button" aria-label="Fechar o menu" data-dismiss="menu"><i class="fas fa-times" aria-hidden="true"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <nav class="menu-body" role="tree">
+                    <div class="menu-folder"><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-bell" aria-hidden="true"></i></span><span class="content">Pontos</span></a>
+                      <ul>
+                        <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-heart" aria-hidden="true"></i></span><span class="content">Ponto 1</span></a></li>
+                        <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-address-book" aria-hidden="true"></i></span><span class="content">Ponto 2</span></a>
+                          <ul>
+                            <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-book" aria-hidden="true"></i></span><span class="content">Conjunto de Leitura 1</span></a></li>
+                            <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-tree" aria-hidden="true"></i></span><span class="content">Conjunto de Leitura 2</span></a>                              
+                            </li>
+                            <li><a class="menu-item" href="javascript: void(0)"><span class="icon"><i class="fas fa-moon" aria-hidden="true"></i></span><span class="content">Camada 3</span></a></li>
+                          </ul>
+                        </li>
+                        <li><a class="menu-item" href="javascript: void(0)"><span class="icon"><i class="fas fa-archive" aria-hidden="true"></i></span><span class="content">Camada 2</span></a></li>
+                      </ul>
+                    </div>
+                    <div class="menu-folder"><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-bell" aria-hidden="true"></i></span><span class="content">Projetos</span></a>
+                      <ul>
+                        <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-heart" aria-hidden="true"></i></span><span class="content">Projeto 1</span></a></li>
+                        <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-address-book" aria-hidden="true"></i></span><span class="content">Projeto 2</span></a>
+                          <ul>
+                            <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-book" aria-hidden="true"></i></span><span class="content">Registro de Leitura 1</span></a></li>
+                            <li><a class="menu-item" href="javascript: void(0)" role="treeitem"><span class="icon"><i class="fas fa-tree" aria-hidden="true"></i></span><span class="content">Registro de Leitura 2</span></a></li>
+                            <li><a class="menu-item" href="javascript: void(0)"><span class="icon"><i class="fas fa-moon" aria-hidden="true"></i></span><span class="content">Camada 3</span></a></li>
+                          </ul>
+                        </li>
+                        <li><a class="menu-item" href="javascript: void(0)"><span class="icon"><i class="fas fa-archive" aria-hidden="true"></i></span><span class="content">Camada 2</span></a></li>
+                      </ul>
+                    </div>                
+                  </nav>                  
+                </div>
+                <div class="menu-scrim" data-dismiss="menu" tabindex="0"></div>
+              </div>
+            </div>
+            <div class="col mb-5">
+              <nav class="br-breadcrumb">
+                <ol class="crumb-list" role="list">
+                  <li class="crumb home"><a class="br-button circle" href="javascript:void(0)"><span class="sr-only">Página inicial</span><i class="fas fa-home"></i></a></li>
+                  <li class="crumb"><i class="icon fas fa-chevron-right"></i><a href="javascript:void(0)">Projeto 1</a>
+                  </li>
+                  <li class="crumb"><i class="icon fas fa-chevron-right"></i><a href="javascript:void(0)">Registro de Nível 1</a>
+                  </li>                  
+                </ol>
+              </nav>
+              <div class="main-content pl-sm-3 mt-4" id="main-content">
+                <div>
+                    <div id="iniciar_registro">
+                        <button id="btn_iniciar_registro" class="btn btn-primary">Iniciar Registro</button>
+                    </div>
+                    <div id="area_leitura">				
+                    </div>	
+                    <visualizador-captador-coordenadas></visualizador-captador-coordenadas>
+                </div>
+                <div>
+                    <ul id="log">				
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+      <footer class="br-footer pt-3" id="footer">
+        <div class="container-lg">
+          <div class="info">
+            <div class="text-down-01 text-medium pb-3">Texto destinado a exibição de informações relacionadas à&nbsp;<strong><a href="">licença de uso</a>.</strong></div>
+          </div>
+        </div>
+      </footer>      
+    </div>
+    <script src="./govbr/core-init.js"></script>
+    <script src="./curvanivel.js" type="module"></script>	
+  </body>
 </html>

@@ -96,9 +96,11 @@ export class CurvaNivelDB extends DBBase{
 
 
     atualizarConfiguracoesPadrao(){
+        /*
         return new Promise((resolve, reject) => {
 
-            let transacao = this.banco.transaction (["componentes", "controladores"], "readwrite")
+            
+            let transacao = this.banco.transaction (["projeto", "controladores"], "readwrite")
 
 
             let osComponentes = transacao.objectStore ("componentes");   
@@ -126,5 +128,6 @@ export class CurvaNivelDB extends DBBase{
                 resolve(true);
             }
         });
+        */
     }
 }

@@ -7,6 +7,9 @@ import { LeituraNivel } from './leitura_nivel/leitura_nivel.js';
 
 import { VisualizadorCaptadorCoordenadas } from './captador_coordenadas/visualizador_captador_coordenadas.js';
 
+import { LeitorCurvaNivelDB } from './db/leitor_curva_nivel_db.js';
+import { EscritorCurvaNivelDB } from './db/escritor_curva_nivel_db.js';
+
 
 window.log = mensagem => {
     let ul = document.querySelector("#log");
